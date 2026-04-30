@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Shrine of Ethan</title>
+    <link rel="icon" type="image/png" href="imgs/Ethan.png">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --red: #c21807;
+            /* Traditional Crimson */
+            --dark-red: #8b0000;
+            --gold: #FFD700;
+            --dark-gold: #DAA520;
+        }
+
+        body {
+            background-color: var(--dark-red);
+            color: var(--gold);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+            background-image: radial-gradient(circle, var(--red) 0%, var(--dark-red) 100%);
+            padding: 0;
+            height: 100vh;
+            /* Forces the body to be exactly 100% of the screen height */
+            overflow: hidden;
+            /* This completely disables scrolling! */
+        }
+
+        .shrine-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 4px solid var(--gold);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 0 20px var(--gold);
+            max-width: 500px;
+            width: 90%;
+            margin-top: 100px;
+            /* Pushes it down safely below the banner (adjust if needed!) */
+            margin-bottom: auto;
+            /* Keeps the footer pushed nicely to the bottom */
+            margin-left: auto;
+            /* Centers it horizontally */
+            margin-right: auto;
+            /* Centers it horizontally */
+        }
+
+        h1 {
+            font-size: 4.3rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            margin-top: 5px;
+        }
+
+        .ethan-portrait {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid var(--gold);
+            object-fit: cover;
+            margin: 20px auto;
+            display: block;
+            background-color: #333;
+            /* Placeholder background */
+        }
+
+        .counter-box {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--gold);
+        }
+
+        #pray-btn {
+            background: linear-gradient(to bottom, var(--gold), var(--dark-gold));
+            color: var(--dark-red);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            transition: transform 0.1s, filter 0.2s;
+            user-select: none;
+        }
+
+        #pray-btn:active {
+            transform: scale(0.95);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--gold);
+            transition: width 0.1s linear;
+        }
+
+        .instructions {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 15px;
+        }
+
+        #announcement-banner {
+            background-color: var(--gold);
+            color: var(--dark-red);
+            width: 100%;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            transform: translateY(-100%);
+            transition: transform 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            /* This perfectly centers the icon and text vertically */
+            justify-content: center;
+            /* This centers everything horizontally in the banner */
+            gap: 10px;
+            /* Adds a consistent space between the icon and the text */
+        }
+
+        #announcement-banner.visible {
+            transform: translateY(0);
+        }
+
+        /* Secret Admin Panel Styles */
+        #admin-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--gold);
+            padding: 30px;
+            border-radius: 10px;
+            z-index: 1000;
+            display: none;
+            /* Hidden by default */
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        #admin-panel.active {
+            display: flex;
+        }
+
+        #admin-panel h3 {
+            margin: 0;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+        }
+
+        #announcement-input {
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--gold);
+            background: #222;
+            color: white;
+            width: 300px;
+            font-family: inherit;
+        }
+
+        #submit-announcement {
+            background: var(--gold);
+            color: var(--dark-red);
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        #submit-announcement:hover {
+            background: var(--dark-gold);
+        }
+
+        .close-hint {
+            font-size: 0.8rem;
+            margin: 0;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        /* Phase 4: Ivy League Background */
+        #ivy-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            /* Changed from cover */
+            background-repeat: no-repeat;
+            /* Added to prevent tiling */
+            background-position: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+            z-index: 50;
+        }
+
+        #ivy-background.active {
+            opacity: 0.6;
+            /* Fades in to 60% visibility */
+            pointer-events: auto;
+            /* Makes it clickable */
+            cursor: pointer;
+        }
+
+        /* Phase 4: The Modal */
+        #blessing-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            /* Sits on top of absolutely everything */
+        }
+
+        #blessing-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(to bottom, var(--dark-red), #000);
+            border: 3px solid var(--gold);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 0 40px var(--gold);
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--gold);
+        }
+
+        #blessing-img {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+            /* Changed from cover */
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            margin: 15px 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Adds a subtle backing to the image */
+        }
+
+        #blessing-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        #close-blessing {
+            background: var(--gold);
+            color: var(--dark-red);
+            border: none;
+            padding: 12px 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #close-blessing:hover {
+            background: var(--dark-gold);
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            margin-top: auto;
+            /* Pushes the footer to the very bottom of the page */
+            padding: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gold);
+            opacity: 0.7;
+            /* Makes it slightly faded so it doesn't distract from the shrine */
+            width: 100%;
+        }
+
+        .site-footer p {
+            margin: 5px 0;
+        }
+
+        .site-footer a {
+            color: var(--gold);
+            text-decoration: underline;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .site-footer a:hover {
+            color: #fff;
+            /* Highlights white when hovered over */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="announcement-banner" title="A divine decree from Ethan.">
+        <i data-lucide="scroll-text"></i> <span id="announcement-text"></span> <i data-lucide="scroll-text"></i>
+    </div>
+
+    <div class="shrine-container">
+        <h1>Shrine of Ethan</h1>
+        <p>You must pray to Ethan for good grades.</p>
+
+        <img src="imgs/Ethan.png" alt="Ethan" class="ethan-portrait" id="ethan-img">
+
+        <div class="counter-box">
+            Prayers Offered: <strong id="prayer-count">0</strong>
+        </div>
+
+        <button id="pray-btn" title="Click or press the Spacebar to pray!">
+            <i data-lucide="flame"></i> Offer Prayer
+        </button>
+
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <p class="instructions">Hold button or Spacebar for 3 seconds to pray.</p>
+        <p class="instructions">Note that the page should load relatively quickly, but try not to spam too much.</p>
+    </div>
+
+    <div id="admin-panel">
+        <h3><i data-lucide="lock"></i> God/Ethan Pannel</h3>
+        <input type="text" id="announcement-input" placeholder="Type a new decree...">
+        <button id="submit-announcement">Broadcast to Shrines</button>
+        <p class="close-hint">Press ESC to close or leave blank to hide banner.</p>
+    </div>
+
+    <div id="ivy-background"></div>
+
+    <div id="blessing-modal">
+        <div class="modal-content">
+            <h2>Divine Blessing</h2>
+            <img id="blessing-img" src="" alt="Ivy League School">
+            <p id="blessing-text"></p>
+            <button id="close-blessing">Accept Blessing</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // --- FIREBASE DATABASE SETTINGS ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+
+        // ⚠️ PASTE YOUR COPIED FIREBASE CONFIG HERE ⚠️
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNtJiap9cQXjl5MQmDzvbRztJxxZq968I",
+            authDomain: "ethan-shrine.firebaseapp.com",
+            databaseURL: "https://ethan-shrine-default-rtdb.firebaseio.com",
+            projectId: "ethan-shrine",
+            storageBucket: "ethan-shrine.firebasestorage.app",
+            messagingSenderId: "720144175967",
+            appId: "1:720144175967:web:9cec523f0da150033c5cea",
+            measurementId: "G-W5CQXXBZKW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const shrineRef = ref(db, 'shrine'); // Points directly to our database tree
+
+        // Game State Variables
+        let prayerCount = 0;
+        let holdTimer;
+        let progressInterval;
+        let progress = 0;
+        let isPraying = false;
+        // Add this new variable near your other Game State Variables
+        let currentAnnouncement = "";
+
+        const prayBtn = document.getElementById('pray-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const prayerCountDisplay = document.getElementById('prayer-count');
+
+        // --- REAL-TIME LISTENER (Replaces loadPrayers) ---
+        onValue(shrineRef, (snapshot) => {
+            const data = snapshot.val();
+
+            if (data) {
+                // Update Prayers
+                prayerCount = data.prayers || 0;
+                prayerCountDisplay.innerText = prayerCount;
+
+                // Update Announcement
+                currentAnnouncement = data.announcement || "";
+                const banner = document.getElementById('announcement-banner');
+                const textSpan = document.getElementById('announcement-text');
+
+                if (currentAnnouncement.trim() !== "") {
+                    textSpan.innerText = currentAnnouncement;
+                    banner.classList.add('visible');
+                    lucide.createIcons();
+                } else {
+                    banner.classList.remove('visible');
+                }
+            }
+        });
+
+        // --- UPDATE DATABASE FUNCTION ---
+        // We attach this to 'window' so the rest of your code can still see it after making the script a module
+        window.updateDatabase = function (newCount) {
+            set(shrineRef, {
+                prayers: newCount,
+                announcement: currentAnnouncement
+            }).catch((error) => {
+                console.error("Prayer lost in the void:", error);
+            });
+        };
+
+        // Functions to handle the 3-second hold logic
+        function startPrayer(e) {
+            if (e.type === 'keydown') {
+                if (e.code !== 'Space') return;
+                if (e.repeat) return;
+            }
+
+            if (isPraying) return;
+            isPraying = true;
+            progress = 0;
+
+            progressInterval = setInterval(() => {
+                progress += (100 / 30);
+                progressBar.style.width = Math.min(progress, 100) + '%';
+            }, 100);
+
+            holdTimer = setTimeout(() => {
+                completePrayer();
+            }, 3000);
+        }
+
+        function stopPrayer(e) {
+            if (e && e.type === 'keyup' && e.code !== 'Space') return;
+
+            isPraying = false;
+            clearTimeout(holdTimer);
+            clearInterval(progressInterval);
+            progressBar.style.width = '0%';
+        }
+
+        function completePrayer() {
+            stopPrayer();
+
+            // Add 1 to the score locally and update the screen
+            prayerCount++;
+            prayerCountDisplay.innerText = prayerCount;
+
+            // Send the new score to the database!
+            updateDatabase(prayerCount);
+
+            // Visual feedback
+            prayBtn.innerHTML = '<i data-lucide="check-circle"></i> Blessed!';
+            lucide.createIcons();
+
+            // --- NEW: Trigger the Ivy League background ---
+            // Pick a random school from the array
+            currentSchool = ivySchools[Math.floor(Math.random() * ivySchools.length)];
+
+            // Set the background image and fade it in
+            ivyBackground.style.backgroundImage = `url('${currentSchool.img}')`;
+            ivyBackground.classList.add('active');
+
+            setTimeout(() => {
+                prayBtn.innerHTML = '<i data-lucide="flame"></i> Offer Prayer';
+                lucide.createIcons();
+            }, 1500);
+        }
+
+        // Event Listeners
+        prayBtn.addEventListener('mousedown', startPrayer);
+        prayBtn.addEventListener('touchstart', startPrayer, { passive: true });
+        window.addEventListener('mouseup', stopPrayer);
+        window.addEventListener('touchend', stopPrayer);
+        window.addEventListener('keydown', startPrayer);
+        window.addEventListener('keyup', stopPrayer);
+
+        // --- ADMIN PANEL LOGIC ---
+        const adminPanel = document.getElementById('admin-panel');
+        const announcementInput = document.getElementById('announcement-input');
+        const submitAnnouncementBtn = document.getElementById('submit-announcement');
+
+        // Listen for the secret hotkey (Ctrl + Shift + E)
+        window.addEventListener('keydown', (e) => {
+            // Check for Ctrl (or Cmd on Mac) + Shift + E
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.code === 'KeyE' || e.key.toLowerCase() === 'e')) {
+                e.preventDefault(); // Stop browser from doing anything weird
+                adminPanel.classList.toggle('active');
+
+                // If we just opened it, put the cursor in the typing box
+                if (adminPanel.classList.contains('active')) {
+                    announcementInput.focus();
+                    announcementInput.value = currentAnnouncement; // Load current text
+                }
+            }
+
+            // Let the user close the panel by pressing Escape
+            if (e.code === 'Escape' && adminPanel.classList.contains('active')) {
+                adminPanel.classList.remove('active');
+            }
+        });
+
+        // What happens when you click "Broadcast"
+        submitAnnouncementBtn.addEventListener('click', () => {
+            // 1. Grab the text from the box
+            currentAnnouncement = announcementInput.value;
+
+            // 2. Update the banner on the screen immediately
+            const banner = document.getElementById('announcement-banner');
+            const textSpan = document.getElementById('announcement-text');
+
+            if (currentAnnouncement.trim() !== "") {
+                textSpan.innerText = currentAnnouncement;
+                banner.classList.add('visible');
+            } else {
+                // If you submit an empty box, hide the banner
+                banner.classList.remove('visible');
+            }
+
+            // 3. Save it to the database so others see it!
+            updateDatabase(prayerCount);
+
+            // 4. Hide the panel
+            adminPanel.classList.remove('active');
+
+            // Refresh icons just in case
+            lucide.createIcons();
+        });
+
+        // --- PHASE 4: IVY LEAGUE LOGIC ---
+        const ivySchools = [
+            { name: "Harvard", img: "imgs/Harvard.svg.png" },
+            { name: "Princeton", img: "imgs/Princeton.svg.png" },
+            { name: "Brown", img: "imgs/Brown.svg.png" },
+            { name: "Columbia", img: "imgs/Columbia.png" },
+            { name: "Cornell", img: "imgs/Cornell.svg.png" },
+            { name: "the University of Pennsylvania", img: "imgs/UPenn.svg.png" },
+            { name: "Dartmouth", img: "imgs/Dartmouth.svg.png" },
+            { name: "Yale", img: "imgs/Yale.svg.png" }
+        ];
+
+        const ivyBackground = document.getElementById('ivy-background');
+        const blessingModal = document.getElementById('blessing-modal');
+        const blessingImg = document.getElementById('blessing-img');
+        const blessingText = document.getElementById('blessing-text');
+        const closeBlessingBtn = document.getElementById('close-blessing');
+
+        let currentSchool = null;
+
+        // When the user clicks the faded background
+        ivyBackground.addEventListener('click', () => {
+            if (ivyBackground.classList.contains('active')) {
+                // Populate the modal with the chosen school
+                blessingImg.src = currentSchool.img;
+                blessingText.innerText = `Ethan has increased the possibility of you getting into ${currentSchool.name}.`;
+
+                // Show modal, hide background
+                blessingModal.classList.add('active');
+                ivyBackground.classList.remove('active');
+            }
+        });
+
+        // When the user clicks "Accept Blessing"
+        closeBlessingBtn.addEventListener('click', () => {
+            blessingModal.classList.remove('active');
+        });
+
+
+        // Expose critical functions to the window so HTML buttons can still click them
+        window.completePrayer = completePrayer;
+        // Separate function to start the prayer (startPrayer)
+        window.startPrayer = startPrayer;
+    </script>
+
+    <footer class="site-footer">
+        <p>Made by <strong>narwalcoco</strong> and <strong>Gemini</strong>.</p>
+        <p>Tools used: Firebase, Lucide Icons, Supabase, Wikipedia for media, and <a
+                href="https://github.com/narwalcoco/Ethan-Shrine" target="_blank">GitHub</a>.</p>
+    </footer>
+</body>
+
+</html>
