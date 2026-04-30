@@ -233,14 +233,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.95);
-            border: 2px solid var(--gold);
+            border: 2px solid var(--roof-teal);
             padding: 30px;
             border-radius: 10px;
             z-index: 1000;
             display: none;
             flex-direction: column;
             gap: 15px;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 30px var(--roof-teal);
         }
 
         #admin-panel.active {
@@ -249,7 +249,7 @@
 
         #admin-panel h3 {
             margin: 0;
-            color: var(--gold);
+            color: var(--stone-white);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -260,7 +260,7 @@
             padding: 12px;
             font-size: 1rem;
             border-radius: 5px;
-            border: 1px solid var(--gold);
+            border: 1px solid var(--roof-teal);
             background: #222;
             color: white;
             width: 300px;
@@ -268,8 +268,8 @@
         }
 
         #submit-announcement {
-            background: var(--gold);
-            color: var(--dark-red);
+            background: var(--roof-teal);
+            color: var(--stone-white);
             border: none;
             padding: 12px;
             font-weight: bold;
@@ -277,10 +277,6 @@
             cursor: pointer;
             border-radius: 5px;
             transition: background 0.2s;
-        }
-
-        #submit-announcement:hover {
-            background: var(--dark-gold);
         }
 
         .close-hint {
