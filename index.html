@@ -596,9 +596,9 @@
         const announcementInput = document.getElementById('announcement-input');
         const submitAnnouncementBtn = document.getElementById('submit-announcement');
 
-        // Listen for the secret hotkey (Ctrl + Shift + E)
+        // Listen for the secret hotkey (Ctrl + Shift + N)
         window.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.code === 'KeyE' || e.key.toLowerCase() === 'e')) {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.code === 'KeyN' || e.key.toLowerCase() === 'n')) {
                 e.preventDefault();
                 adminPanel.classList.toggle('active');
 
