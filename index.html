@@ -466,7 +466,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
 
-        // ⚠️ PASTE YOUR COPIED FIREBASE CONFIG HERE ⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyDNtJiap9cQXjl5MQmDzvbRztJxxZq968I",
             authDomain: "ethan-shrine.firebaseapp.com",
@@ -596,30 +595,25 @@
         const announcementInput = document.getElementById('announcement-input');
         const submitAnnouncementBtn = document.getElementById('submit-announcement');
 
-        // Security Variables for the 2-Step Authentication
         let secretBuffer = '';
         let secretTimeout;
         let isPasswordUnlocked = false;
 
         window.addEventListener('keydown', (e) => {
-            // If the admin panel is already open, just listen for the Escape key to close it
             if (adminPanel.classList.contains('active')) {
                 if (e.code === 'Escape') {
                     adminPanel.classList.remove('active');
-                    isPasswordUnlocked = false; // 🔒 Lock the panel back up when closed
+                    isPasswordUnlocked = false;
                 }
-                return; // Stop the rest of the password script from running while typing decrees
+                return;
             }
 
-            // Clear the 3-second reset timer every time a key is pressed
             clearTimeout(secretTimeout);
 
-            // STEP 2: The Keybind (Only works if the password was successfully entered)
-            // (Currently set to Ctrl + Shift + E)
             if (isPasswordUnlocked && (e.ctrlKey || e.metaKey) && e.shiftKey && (e.code === 'KeyE' || e.key.toLowerCase() === 'e')) {
                 e.preventDefault(); 
-                clearTimeout(secretTimeout); // Stop the timer since they successfully got in
-                secretBuffer = ''; // Reset the typing buffer
+                clearTimeout(secretTimeout);
+                secretBuffer = '';
                 
                 adminPanel.classList.add('active');
                 announcementInput.focus();
@@ -627,22 +621,18 @@
                 return;
             }
 
-            // STEP 1: Typing the Secret Password
             if (e.key === 'Enter') {
-                // If they hit Enter, check if what they typed matches the password
                 if (secretBuffer === '112311asianguru') {
-                    isPasswordUnlocked = true; // 🔓 Password correct! Waiting for keybind...
+                    isPasswordUnlocked = true;
                 }
-                secretBuffer = ''; // Clear the buffer whether they got it right or wrong
+                secretBuffer = '';
             } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-                // If it's a normal character (not a control key), add it to the buffer
                 secretBuffer += e.key;
             }
 
-            // THE 3-SECOND RULE: If no keys are pressed for 3 seconds, reset everything!
             secretTimeout = setTimeout(() => {
                 secretBuffer = '';
-                isPasswordUnlocked = false; // 🔒 Lock it back up
+                isPasswordUnlocked = false;
             }, 3000);
         });
 
@@ -660,7 +650,7 @@
 
             updateDatabase(prayerCount);
             adminPanel.classList.remove('active');
-            isPasswordUnlocked = false; // 🔒 Lock it back up when they submit
+            isPasswordUnlocked = false;
             lucide.createIcons();
         });
 
